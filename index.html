@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participaciones | Competencias Digitales</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        :root {
+            --primary: #0f6cbd; /* Azul institucional estilo Teams */
+            --bg: #f3f2f1;
+            --card-bg: #ffffff;
+            --text: #242424;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #004578);
+            color: white;
+            width: 100%;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            box-sizing: border-box;
+        }
+
+        header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
+        header p { margin: 0.5rem 0 0; font-size: 1rem; opacity: 0.9; font-weight: 400; }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        .controls {
+            margin-bottom: 2rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-family: inherit;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fff;
+            color: var(--text);
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .student-btn {
+            background: var(--card-bg);
+            border: 1px solid #e0e0e0;
+            border-left: 6px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 600;
+            color: var(--text);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .student-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(15, 108, 189, 0.15);
+            border-color: var(--primary);
+        }
+
+        .student-btn:active {
+            transform: translateY(0);
+        }
+
+        .student-btn::after {
+            content: '➕';
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        /* Ocultar el grid si no hay alumnos */
+        .grid:empty { display: none; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Competencias Digitales</h1>
+        <p>Licenciatura en Derecho - Registro de Participación</p>
+    </header>
+    
+    <div class="container">
+        <div class="controls">
+            <select id="selectEquipo" onchange="mostrarAlumnos()">
+                <option value="">📂 Selecciona un Equipo para iniciar...</option>
+                <option value="1">Equipo 1</option>
+                <option value="2">Equipo 2</option>
+                <option value="3">Equipo 3</option>
+                <option value="4">Equipo 4</option>
+                <option value="5">Equipo 5</option>
+                <option value="6">Equipo 6</option>
+                <option value="7">Equipo 7</option>
+                <option value="8">Equipo 8</option>
+                <option value="9">Equipo 9</option>
+                <option value="10">Equipo 10</option>
+                <option value="11">Equipo 11</option>
+                <option value="12">Equipo 12</option>
+            </select>
+        </div>
+        
+        <div class="grid" id="contenedorAlumnos"></div>
+    </div>
+
+    <script>
+        const alumnosPorEquipo = {
+            "1": ["Abril Nahaena Martin Cach", "Arcángel Emmanuel Patrón Jiménez", "Constanza Álvarez García", "Lilia Paola Canche Valencia", "Valeria Nathania Hernández Torres"],
+            "2": ["Christopher Alejandro Sosa López", "José Andrés López", "Leocadio Antonio Zunza", "Ángel Daniel Jurado Rejón"],
+            "3": ["Danya Domínguez Cornejo", "Hana Bethel Pool Ciau", "Leydi Amayrani Rosas Bello", "Luisa Fernanda Ángel Jiménez", "Megan Alejandra Coral Canto"],
+            "4": ["Danna Paulett Briceño Nah", "Leilani Novelo Chable", "Sofia Flores González"],
+            "5": ["Ariel Alejandra Yeh León", "Sophia Valeria Balam Vázquez", "Yazmín Canché Hernández"],
+            "6": ["Alondra Monserrat Caamal Tec", "Johan Yamir Morales Tox", "Santiago Novelo Merinos"],
+            "7": ["Alexa del Carmen Meza Evangelista", "Diego Alessandro Hernández Romero", "Giseli Sinaí Castillón Escalante", "Sherlin Monserrat Sanchez Chan"],
+            "8": ["América Liney Vázquez Mendoza", "Brandon Gabriel Medina Pérez", "Darali Borges Zavaleta", "Gerson Israel Revolorio Guillen", "Karen del Rosario Ovando Cisneros"],
+            "9": ["Paola Mondragón Canul", "Shairely Guadalupe Ravel Chin"],
+            "10": ["Aylin Guadalupe Aguero Sánchez", "Mayra Beatriz Bobadilla Pech"],
+            "11": ["Claudia Marisol Chávez Bacab", "Fidel Marcos Jiménez", "María del Carmen Pacheco Gutiérrez", "Silvana Aracely Chan Benítez"],
+            "12": ["Alicia Mariel Santana Azueta", "Diana Sofía Martínez Frutos", "Edgar Daniel Espinosa Flores"]
+        };
+
+        function mostrarAlumnos() {
+            const equipoSelect = document.getElementById("selectEquipo").value;
+            const contenedor = document.getElementById("contenedorAlumnos");
+            contenedor.innerHTML = ""; 
+
+            if (!equipoSelect) return;
+
+            const lista = alumnosPorEquipo[equipoSelect];
+            lista.forEach(nombre => {
+                const btn = document.createElement("button");
+                btn.className = "student-btn";
+                btn.innerText = nombre;
+                btn.onclick = () => mandarPunto(nombre, equipoSelect, btn);
+                contenedor.appendChild(btn);
+            });
+        }
+
+        function mandarPunto(nombreAlumno, numeroEquipo, botonElemento) {
+            // Animación visual al presionar
+            botonElemento.style.backgroundColor = "#e1dfdd";
+            setTimeout(() => botonElemento.style.backgroundColor = "white", 300);
+
+            const urlWebhook = "https://hook.us2.make.com/paojau2yj6rkew3gil7vjvu3gnpqjeke";
+            
+            fetch(urlWebhook, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombre: nombreAlumno, equipo: numeroEquipo })
+            }).then(response => {
+                // Aquí puedes quitar el alert si resulta molesto en vivo, o dejarlo para confirmar
+                alert("✅ ¡Palomita registrada para " + nombreAlumno + "!");
+            }).catch(error => {
+                alert("❌ Error al conectar, revisa el internet Bro.");
+            });
+        }
+    </script>
+</body>
+</html>
